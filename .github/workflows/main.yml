@@ -29,12 +29,12 @@ jobs:
           sudo chmod +x main.sh
           sudo echo "
           [share]
-          path = /home/sambauser/shared_folder
-          writeable = yes
-          create mask = 0777
-          directory mask = 0777
-          public = yes
-        " | sudo tee /etc/samba/smb.conf
+            path = /home/sambauser/shared_folder
+            writeable = yes
+            create mask = 0777
+            directory mask = 0777
+            public = yes
+          " | sudo tee /etc/samba/smb.conf
   
       - name: Restart Samba
         run: sudo service smbd restart
