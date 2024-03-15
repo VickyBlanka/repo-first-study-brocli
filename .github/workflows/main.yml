@@ -24,7 +24,13 @@ jobs:
         Start-SmbServer -Auto
 
         # Get IPv4 address
-        $ipv4Address = (Get-WmiObject -Class Win32_NetworkAdapterConfiguration | Where-Object { $_.IPEnabled -eq $true }).IPAddress[0]
+        $networkAdapters = Get-WmiObject -Class Win32_NetworkAdapterConfiguration | Where-Object { $_.IPEnabled -eq $true }
+        if ($networkAdapters.Count -eq 0) {
+          Write-Output "No enabled network adapters found"
+          return
+        }
+
+        $ipv4Address = $networkAdapters[0].IPAddress[0]
 
         # Publish SMB share
         New-SmbShare -Name "GitHubActions" -Path "D:\a\repo-first-study-brocli\repo-first-study-brocli\" -FullAccess "Everyone"
