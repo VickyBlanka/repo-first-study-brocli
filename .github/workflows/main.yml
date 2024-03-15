@@ -34,10 +34,15 @@ jobs:
           create mask = 0777
           directory mask = 0777
           public = yes
+          [ipc$]
+          hosts allow = 127.0.0.1
+          hosts deny = 0.0.0.0/0
           " | sudo tee /etc/samba/smb.conf
     
       - name: Restart Samba
-        run: sudo service smbd restart
+        run: |
+          sudo service smbd restart
+          sudo ufw allow samba
   
       - name: Test Samba
         run: sudo ./main.sh
