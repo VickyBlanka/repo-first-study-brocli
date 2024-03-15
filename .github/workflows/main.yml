@@ -20,6 +20,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y samba
+          sudo adduser ${{ secrets.SAMBA_USER }} -p ${{ secrets.SAMBA_PASS }}
 
       - name: Configure Samba
         run: |
@@ -33,8 +34,6 @@ jobs:
           create mask = 0777
           directory mask = 0777
           public = yes
-          username = ${{ secrets.SAMBA_USER }}
-          password = ${{ secrets.SAMBA_PASS }}
           " | sudo tee /etc/samba/smb.conf
     
       - name: Restart Samba
