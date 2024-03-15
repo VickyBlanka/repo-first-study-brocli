@@ -43,6 +43,7 @@ jobs:
             directory mask = 0777
             guest ok = yes
             inherit permission = yes
+            bind interfaces only = yes
             interfaces = lo
           " | sudo tee /etc/samba/smb.conf
     
