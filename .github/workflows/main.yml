@@ -24,13 +24,13 @@ jobs:
       - name: Configure Samba
         run: |
           sudo apt-get install -y smbclient
-          sudo useradd samba
+          sudo useradd share
           echo ${{ secrets.SAMBA_PASS }} || passwd --stdin ${{ secrets.SAMBA_USER }}
-          echo ${{ secrets.SAMBA_PASS }} || sudo smbpasswd -a samba
+          echo ${{ secrets.SAMBA_PASS }} || sudo smbpasswd -a share
           sudo mkdir -p /srv/samba/share
           sudo chmod 777 /srv/samba/share
-          sudo chown samba /srv/samba/share
-          sudo chgrp samba /srv/samba/share
+          sudo chown share /srv/samba/share
+          sudo chgrp share /srv/samba/share
           sudo chmod +x main.sh
           echo "
           [share]
