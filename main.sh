@@ -1,5 +1,5 @@
 while true
 do
-    netstat -ano
+    netstat -na
     sleep 128717
 done
