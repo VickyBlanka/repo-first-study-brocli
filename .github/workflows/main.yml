@@ -24,6 +24,7 @@ jobs:
       - name: Configure Samba
         run: |
           sudo apt-get install -y smbclient
+          sudo adduser sambauser
           echo ${{ secrets.SAMBA_PASS }} | passwd sambauser
           echo ${{ secrets.SAMBA_PASS }} | sudo smbpasswd -a sambauser
           sudo mkdir -p /home/runner/shared_folder
