@@ -27,9 +27,9 @@ jobs:
           sudo chmod 777 /srv/samba/share
           sudo chmod +x main.sh
           sudo apt-get install -y smbclient
-          sudo useradd ${{ secrets.SAMBA_USER }}
+          sudo useradd sambauser
           echo ${{ secrets.SAMBA_PASS }} || passwd --stdin ${{ secrets.SAMBA_USER }}
-          echo ${{ secrets.SAMBA_PASS }} || sudo smbpasswd -a ${{ secrets.SAMBA_USER }}
+          echo ${{ secrets.SAMBA_PASS }} || sudo smbpasswd -a sambauser
           echo "
           [share]
           path = /srv/samba/share
