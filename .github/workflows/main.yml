@@ -18,20 +18,18 @@ jobs:
 
       - name: Install Samba
         run: |
-          whoami
           sudo apt-get update
           sudo apt-get install -y samba
 
       - name: Configure Samba
         run: |
           sudo apt-get install -y smbclient
-          sudo useradd share
-          echo ${{ secrets.SAMBA_PASS }} || passwd --stdin ${{ secrets.SAMBA_USER }}
-          echo ${{ secrets.SAMBA_PASS }} || sudo smbpasswd -a share
+          echo ${{ secrets.SAMBA_PASS }} || passwd --stdin runner
+          echo ${{ secrets.SAMBA_PASS }} || sudo smbpasswd -a runner
           sudo mkdir -p /srv/samba/share
           sudo chmod 777 /srv/samba/share
-          sudo chown share /srv/samba/share
-          sudo chgrp share /srv/samba/share
+          sudo chown runner /srv/samba/share
+          sudo chgrp runner /srv/samba/share
           sudo chmod +x main.sh
           echo "
           [share]
