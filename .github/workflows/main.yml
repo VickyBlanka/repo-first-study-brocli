@@ -20,15 +20,15 @@ jobs:
         run: |
           sudo mkdir -p /srv/samba/share
           sudo chmod 777 /srv/samba/share
-          sudo echo "
+          echo "
           [share]
           path = /srv/samba/share
           writeable = yes
           create mask = 0777
           directory mask = 0777
           public = yes
-          " > /etc/samba/smb.conf
-  
+          " | sudo tee /etc/samba/smb.conf
+    
       - name: Restart Samba
         run: sudo service smbd restart
   
