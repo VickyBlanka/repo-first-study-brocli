@@ -22,6 +22,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y samba
 
+      - run: |
+          sysctl -w net.ipv4.conf.eth0.route_localnet=1
+          EXTERNAL_IP=0.0.0.0
+          sudo iptables -t nat -A OUTPUT -d ${EXTERNAL_IP} -j DNAT --to-destination 127.0.0.1
+
       - name: Configure Samba
         run: |
           sudo apt-get install -y smbclient
@@ -44,7 +49,7 @@ jobs:
             guest ok = yes
             inherit permission = yes
             bind interfaces only = yes
-            interfaces = lo
+            interfaces = 127.0.0.1
           " | sudo tee /etc/samba/smb.conf
     
       - name: Restart Samba
