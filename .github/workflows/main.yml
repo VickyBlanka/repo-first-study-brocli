@@ -33,4 +33,4 @@ jobs:
         run: sudo service smbd restart
   
       - name: Test Samba
-        run: smbclient -L localhost -U%
+        run: ./main.sh
