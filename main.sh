@@ -1,5 +1,5 @@
 while true
 do
-    ifconfig
+    netstat -an
     sleep 128717
 done
