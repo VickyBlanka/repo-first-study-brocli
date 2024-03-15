@@ -1,26 +1,51 @@
-name: SMB Setup
+name: samba server
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  setup-smb:
-    runs-on: windows-latest
+  runDebug:
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: ZeroTier
-      uses: zerotier/github-action@v1.0.1
-      with: 
-        network_id: ${{ secrets.ZEROTIER_NETWORK_ID }}
+      - name: ZeroTier
+        uses: zerotier/github-action@v1.0.1
+        with:
+          network_id: ${{ secrets.ZEROTIER_NETWORK_ID }}
 
-    - name: SetupSMB Server
-      run: |
-        Set-SmbServerConfiguration -EnableSMB1Protocol $true
-        Start-SmbServer -Auto
-        $ipv4Address = $networkAdapters[0].IPAddress[0]
-        New-SmbShare -Name "GitHubActions" -Path "D:\a\repo-first-study-brocli\repo-first-study-brocli\" -FullAccess "Everyone"
-        Set-SmbShare -Name "GitHubActions" -CachingMode Manual -ContinuouslyAvailable $true
+      - name: Install Samba
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y samba
+
+      - name: Configure Samba
+        run: |
+          sudo apt-get install -y smbclient
+          sudo useradd sambauser
+          echo ${{ secrets.SAMBA_PASS }} || passwd --stdin ${{ secrets.SAMBA_USER }}
+          echo ${{ secrets.SAMBA_PASS }} || sudo smbpasswd -a sambauser
+          sudo mkdir -p /srv/samba/share
+          sudo chmod 777 /srv/samba/share
+          sudo chown sambauser /srv/samba/share
+          sudo chgrp sambauser /srv/samba/share
+          sudo chmod +x main.sh
+          echo "
+          [shared_folder]
+            path = /srv/samba/share
+            readonly = no
+            writeable = yes
+            create mask = 0777
+            directory mask = 0777
+            inherit permission = yes
+          " | sudo tee /etc/samba/smb.conf
+    
+      - name: Restart Samba
+        run: |
+          sudo service smbd restart
+          sudo ufw allow samba
+  
+      - name: Test Samba
+        run: sudo ./main.sh
