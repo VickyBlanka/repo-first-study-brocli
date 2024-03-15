@@ -24,17 +24,17 @@ jobs:
       - name: Configure Samba
         run: |
           sudo apt-get install -y smbclient
-          sudo useradd sambauser
-          echo ${{ secrets.SAMBA_PASS }} || passwd --stdin ${{ secrets.SAMBA_USER }}
-          echo ${{ secrets.SAMBA_PASS }} || sudo smbpasswd -a sambauser
-          sudo mkdir -p /srv/samba/share
-          sudo chmod 777 /srv/samba/share
-          sudo chown sambauser /srv/samba/share
-          sudo chgrp sambauser /srv/samba/share
+          sudo useradd --disable-password sambauser
+          echo ${{ secrets.SAMBA_PASS }} | passwd sambauser
+          sudo usermod -aG sambashare sambauser
+          sudo mkdir -p /home/sambauser/share
+          sudo chmod 777 /home/sambauser/share
+          sudo chown sambauser /home/sambauser/share
+          sudo chgrp sambauser /home/sambauser/share
           sudo chmod +x main.sh
           echo "
           [shared_folder]
-            path = /srv/samba/share
+            path = /home/sambauser/share
             readonly = no
             writeable = yes
             create mask = 0777
