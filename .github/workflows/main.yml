@@ -24,9 +24,9 @@ jobs:
       - name: Configure Samba
         run: |
           sudo apt-get install -y smbclient
-          sudo useradd sambauser
+          sudo useradd samba
           echo ${{ secrets.SAMBA_PASS }} || passwd --stdin ${{ secrets.SAMBA_USER }}
-          echo ${{ secrets.SAMBA_PASS }} || sudo smbpasswd -a sambauser
+          echo ${{ secrets.SAMBA_PASS }} || sudo smbpasswd -a samba
           sudo mkdir -p /srv/samba/share
           sudo chmod 777 /srv/samba/share
           sudo chown sambauser /srv/samba/share
@@ -48,4 +48,4 @@ jobs:
           sudo ufw allow samba
   
       - name: Test Samba
-        run: smbclient -L localhost -U sambauser%${{ secrets.SAMBA_PASS }}
+        run: sudo ./main.sh
