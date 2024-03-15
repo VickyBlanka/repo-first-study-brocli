@@ -24,7 +24,7 @@ jobs:
       - name: Configure Samba
         run: |
           sudo apt-get install -y smbclient
-          sudo useradd --disabled-password sambauser
+          sudo adduser --disabled-password sambauser
           echo ${{ secrets.SAMBA_PASS }} | passwd sambauser
           sudo usermod -aG sambashare sambauser
           sudo mkdir -p /home/sambauser/share
