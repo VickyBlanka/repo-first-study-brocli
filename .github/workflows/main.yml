@@ -11,5 +11,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - run: sudo apt install samba
-      - run: sudo adduser sambauser
+      - name: Install Samba
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y samba
+
+      - name: Configure Samba
+        run: |
+          sudo mkdir -p /srv/samba/share
+          sudo chmod 777 /srv/samba/share
+          sudo echo "
+          [share]
+          path = /srv/samba/share
+          writeable = yes
+          create mask = 0777
+          directory mask = 0777
+          public = yes
+          " > /etc/samba/smb.conf
+  
+      - name: Restart Samba
+        run: sudo service smbd restart
+  
+      - name: Test Samba
+        run: smbclient -L localhost -U%
