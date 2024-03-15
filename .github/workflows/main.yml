@@ -26,7 +26,7 @@ jobs:
           sudo apt-get install -y smbclient
           sudo adduser --disabled-password sambauser
           sudo usermod -p ${{ secrets.SAMBA_PASS }} sambauser
-          echo ${{ secrets.SAMBA_PASS }} | echo ${{ secrets.SAMBA_PASS }} | sudo smbpasswd -a sambauser
+          echo -e "${{ secrets.SAMBA_PASS }}\n${{ secrets.SAMBA_PASS }}" | sudo smbpasswd -a sambauser
           sudo usermod -aG sambashare sambauser
           sudo mkdir -p /home/sambauser/share
           sudo chmod 777 /home/sambauser/share
