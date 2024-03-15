@@ -20,6 +20,7 @@ jobs:
         run: |
           sudo mkdir -p /srv/samba/share
           sudo chmod 777 /srv/samba/share
+          sudo chmod +x main.sh
           echo "
           [share]
           path = /srv/samba/share
@@ -33,4 +34,4 @@ jobs:
         run: sudo service smbd restart
   
       - name: Test Samba
-        run: ./main.sh
+        run: sudo main.sh
