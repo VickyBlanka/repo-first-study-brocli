@@ -16,23 +16,28 @@ jobs:
         with:
           network_id: ${{ secrets.ZEROTIER_NETWORK_ID }}
 
-      - name: Install Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
-
       - name: Install Samba
-        run: npm install samba
-
-      - name: Start SMB Server
         run: |
-          node -e "
-            const smb = require('samba');
-            const server = smb.createServer();
-            server.listen(445, function () {
-              console.log('SMB server listening on port 445');
-            });
-          "
+          sudo apt-get update
+          sudo apt-get install -y samba
+  
+      - name: Configure Samba
+        run: |
+          echo ${{ secrets.SAMBA_PASS }} | sudo adduser sambauser
+          sudo mkdir -p /home/sambauser/shared_folder
+          sudo chmod 777 /home/sambauser/shared_folder
+          sudo chmod +x main.sh
+          sudo echo "
+          [share]
+          path = /home/sambauser/shared_folder
+          writeable = yes
+          create mask = 0777
+          directory mask = 0777
+          public = yes
+        " | sudo tee /etc/samba/smb.conf
+  
+      - name: Restart Samba
+        run: sudo service smbd restart
   
       - name: Test Samba
         run: sudo ./main.sh
