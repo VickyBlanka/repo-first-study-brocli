@@ -32,4 +32,8 @@ jobs:
 
         # Output IPv4 address and SMB share path
         Write-Output "SMB share available at: \\$($env:COMPUTERNAME)\GitHubActions"
-        Write-Output "IPv4 address: $ipv4Address"
+        if ($ipv4Address) {
+          Write-Output "IPv4 address: $ipv4Address"
+        } else {
+          Write-Output "IPv4 address: Not found"
+        }
