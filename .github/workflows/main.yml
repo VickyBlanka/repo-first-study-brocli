@@ -27,6 +27,7 @@ jobs:
           echo ${{ secrets.SAMBA_PASS }} || sudo smbpasswd -a sambauser
           sudo mkdir -p /home/sambauser/shared_folder
           sudo chmod 777 /home/sambauser/shared_folder
+          sudo chown -R sambauser:sambashare /home/sambauser/shared_folder
           sudo chmod +x main.sh
           sudo echo "
           [shared_folder]
