@@ -30,7 +30,7 @@ jobs:
           sudo mkdir -p /home/sambauser/share
           sudo chmod 777 /home/sambauser/share
           sudo chown sambauser /home/sambauser/share
-          sudo chgrp sambauser /home/sambauser/share
+          sudo chgrp sambashare /home/sambauser/share
           sudo chmod +x main.sh
           echo "
           [shared_folder]
