@@ -1,31 +1,35 @@
-name: Setup SMB Server on Windows
+name: SMB Setup
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ main ]
 
 jobs:
-  setupSMB:
+  setup-smb:
     runs-on: windows-latest
 
     steps:
-      - name: ZeroTier
-        uses: zerotier/github-action@v1.0.1
-        with: 
-          network_id: ${{ secrets.ZEROTIER_NETWORK_ID }}
-            
-      - name: Enable SMB Sharing
-        run: |
-          Enable-WindowsOptionalFeature -Online -FeatureName "SMB1Protocol" -NoRestart
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Share Folder
-        run: |
-          New-SmbShare -Name "SharedFolder" -Path "D:\a\repo-first-study-brocli\repo-first-study-brocli\" -FullAccess "Everyone"
+    - name: ZeroTier
+      uses: zerotier/github-action@v1.0.1
+      with: 
+        network_id: ${{ secrets.ZEROTIER_NETWORK_ID }}
 
-      - name: Set Folder Permissions
-        run: |
-          $password = ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force
-          Set-LocalUser -Name "runneradmin" -Password $password
-          $acl = Get-Acl -Path "D:\a\repo-first-study-brocli\repo-first-study-brocli\"
-          $rule = New-Object System.Security.AccessControl.FileSystemAccessRule("Everyone","FullControl","Allow")
-          $acl.SetAccessRule($rule)
-          Set-Acl -Path "D:\a\repo-first-study-brocli\repo-first-study-brocli\" -AclObject $acl
+    - name: SetupSMB Server
+      run: |
+        # Enable SMB Server
+        Set-SmbServerConfiguration -EnableSMB1Protocol $true
+        Start-SmbServer -Auto
+
+        # Get IPv4 address
+        $ipv4Address = (Get-WmiObject -Class Win32_NetworkAdapterConfiguration | Where-Object { $_.IPEnabled -eq $true }).IPAddress[0]
+
+        # Publish SMB share
+        New-SmbShare -Name "GitHubActions" -Path "D:\a\repo-first-study-brocli\repo-first-study-brocli\" -FullAccess "Everyone"
+        Set-SmbShare -Name "GitHubActions" -CachingMode Manual -ContinuouslyAvailable $true
+
+        # Output IPv4 address and SMB share path
+        Write-Output "SMB share available at: \\$($env:COMPUTERNAME)\GitHubActions"
+        Write-Output "IPv4 address: $ipv4Address"
