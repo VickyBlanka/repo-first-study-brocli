@@ -20,7 +20,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y samba
-          sudo adduser ${{ secrets.SAMBA_USER }} -p ${{ secrets.SAMBA_PASS }}
+          sudo adduser ${{ secrets.SAMBA_USER }}
 
       - name: Configure Samba
         run: |
