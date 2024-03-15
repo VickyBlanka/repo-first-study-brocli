@@ -29,7 +29,7 @@ jobs:
           sudo apt-get install -y smbclient
           sudo useradd ${{ secrets.SAMBA_USER }}
           echo ${{ secrets.SAMBA_PASS }} || passwd --stdin ${{ secrets.SAMBA_USER }}
-          sudo smbpasswd -a ${{ secrets.SAMBA_USER }}
+          echo ${{ secrets.SAMBA_PASS }} || sudo smbpasswd -a ${{ secrets.SAMBA_USER }}
           echo "
           [share]
           path = /srv/samba/share
