@@ -40,4 +40,4 @@ jobs:
         run: sudo service smbd restart
   
       - name: Test Samba
-        run: sudo netstat -tuln
+        run: sudo ./main.sh
