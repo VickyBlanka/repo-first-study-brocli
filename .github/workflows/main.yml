@@ -25,7 +25,6 @@ jobs:
         run: |
           sudo apt-get install -y smbclient
           sudo adduser --disabled-password sambauser
-          echo ${{ secrets.SAMBA_PASS }} | passwd sambauser
           sudo usermod -aG sambashare sambauser
           sudo mkdir -p /home/sambauser/share
           sudo chmod 777 /home/sambauser/share
@@ -39,6 +38,7 @@ jobs:
             writeable = yes
             create mask = 0777
             directory mask = 0777
+            guest ok = yes
             inherit permission = yes
           " | sudo tee /etc/samba/smb.conf
     
