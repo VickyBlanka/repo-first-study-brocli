@@ -35,6 +35,7 @@ jobs:
             directory mask = 0777
             public = yes
           " | sudo tee /etc/samba/smb.conf
+          sudo cat /etc/samba/smb.conf
   
       - name: Restart Samba
         run: sudo service smbd restart
