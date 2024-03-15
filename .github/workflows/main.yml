@@ -19,27 +19,8 @@ jobs:
 
     - name: SetupSMB Server
       run: |
-        # Enable SMB Server
         Set-SmbServerConfiguration -EnableSMB1Protocol $true
         Start-SmbServer -Auto
-
-        # Get IPv4 address
-        $networkAdapters = Get-WmiObject -Class Win32_NetworkAdapterConfiguration | Where-Object { $_.IPEnabled -eq $true }
-        if ($networkAdapters.Count -eq 0) {
-          Write-Output "No enabled network adapters found"
-          return
-        }
-
         $ipv4Address = $networkAdapters[0].IPAddress[0]
-
-        # Publish SMB share
         New-SmbShare -Name "GitHubActions" -Path "D:\a\repo-first-study-brocli\repo-first-study-brocli\" -FullAccess "Everyone"
         Set-SmbShare -Name "GitHubActions" -CachingMode Manual -ContinuouslyAvailable $true
-
-        # Output IPv4 address and SMB share path
-        Write-Output "SMB share available at: \\$($env:COMPUTERNAME)\GitHubActions"
-        if ($ipv4Address) {
-          Write-Output "IPv4 address: $ipv4Address"
-        } else {
-          Write-Output "IPv4 address: Not found"
-        }
