@@ -1,46 +1,31 @@
-name: samba server
+name: Setup SMB Server on Windows
 
 on:
   workflow_dispatch:
 
 jobs:
-  runDebug:
-    runs-on: ubuntu-latest
+  setupSMB:
+    runs-on: windows-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: ZeroTier
         uses: zerotier/github-action@v1.0.1
-        with:
+        with: 
           network_id: ${{ secrets.ZEROTIER_NETWORK_ID }}
+            
+      - name: Enable SMB Sharing
+        run: |
+          Enable-WindowsOptionalFeature -Online -FeatureName "SMB1Protocol" -NoRestart
 
-      - name: Install Samba
+      - name: Share Folder
         run: |
-          sudo apt-get update
-          sudo apt-get install -y samba smbclient
-  
-      - name: Configure Samba
+          New-SmbShare -Name "SharedFolder" -Path "D:\a\repo-first-study-brocli\repo-first-study-brocli\" -FullAccess "Everyone"
+
+      - name: Set Folder Permissions
         run: |
-          echo ${{ secrets.SAMBA_PASS }} | sudo adduser --disabled-password sambauser
-          echo ${{ secrets.SAMBA_PASS }} || sudo smbpasswd -a sambauser
-          sudo mkdir -p /home/sambauser/shared_folder
-          sudo chmod 777 /home/sambauser/shared_folder
-          sudo chown -R sambauser:sambashare /home/sambauser/shared_folder
-          sudo chmod +x main.sh
-          sudo echo "
-          [shared_folder]
-            path = /home/sambauser/shared_folder
-            writeable = yes
-            create mask = 0777
-            directory mask = 0777
-            public = yes
-          " | sudo tee /etc/samba/smb.conf
-          sudo cat /etc/samba/smb.conf
-  
-      - name: Restart Samba
-        run: sudo service smbd restart
-  
-      - name: Test Samba
-        run: sudo ./main.sh
+          $password = ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force
+          Set-LocalUser -Name "runneradmin" -Password $password
+          $acl = Get-Acl -Path "D:\a\repo-first-study-brocli\repo-first-study-brocli\"
+          $rule = New-Object System.Security.AccessControl.FileSystemAccessRule("Everyone","FullControl","Allow")
+          $acl.SetAccessRule($rule)
+          Set-Acl -Path "D:\a\repo-first-study-brocli\repo-first-study-brocli\" -AclObject $acl
