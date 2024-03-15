@@ -33,7 +33,7 @@ jobs:
           sudo chgrp sambauser /srv/samba/share
           sudo chmod +x main.sh
           echo "
-          [shared_folder]
+          [share]
             path = /srv/samba/share
             readonly = no
             writeable = yes
@@ -48,4 +48,4 @@ jobs:
           sudo ufw allow samba
   
       - name: Test Samba
-        run: sudo ./main.sh
+        run: smbclient -L localhost -U sambauser%${{ secrets.SAMBA_PASS }}
