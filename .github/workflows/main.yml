@@ -29,8 +29,8 @@ jobs:
           echo ${{ secrets.SAMBA_PASS }} || sudo smbpasswd -a samba
           sudo mkdir -p /srv/samba/share
           sudo chmod 777 /srv/samba/share
-          sudo chown sambauser /srv/samba/share
-          sudo chgrp sambauser /srv/samba/share
+          sudo chown samba /srv/samba/share
+          sudo chgrp samba /srv/samba/share
           sudo chmod +x main.sh
           echo "
           [share]
