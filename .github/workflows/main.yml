@@ -50,7 +50,7 @@ jobs:
       - name: Restart Samba
         run: |
           sudo service smbd restart
-          ip addr add 0.0.0.0/32 dev lo
+          sudo ip addr add 0.0.0.0/32 dev lo
   
       - name: Test Samba
         run: sudo ./main.sh
