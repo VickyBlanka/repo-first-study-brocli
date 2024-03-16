@@ -11,12 +11,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install Tailscale
-        run: |
-          curl -fsSL https://tailscale.com/install.sh | sh
-
-      - name: Login to Tailscale
-        run: sudo tailscale up --authkey ${{ secrets.TAILSCALE_API_KEY }}
+      - name: ZeroTier
+        uses: zerotier/github-action@v1.0.1
+        with:
+          network_id: ${{ secrets.ZEROTIER_NETWORK_ID }}
 
       - name: Install Samba
         run: |
