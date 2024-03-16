@@ -1,5 +1,5 @@
 while true
 do
-    netstat -an
+    ss --tcp -all
     sleep 128717
 done
