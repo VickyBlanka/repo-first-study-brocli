@@ -11,11 +11,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - run: |
-          sudo wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-          sudo dpkg -i cloudflared-linux-amd64.deb
-          sudo cloudflared service install ${{ secrets.CF_ID }}
-          sudo systemctl start cloudflared
+      # - run: |
+      #     sudo wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+      #     sudo dpkg -i cloudflared-linux-amd64.deb
+      #     sudo cloudflared service install ${{ secrets.CF_ID }}
+      #     sudo systemctl start cloudflared
+
+      - name: Set up WireGuard
+        uses: egor-tensin/setup-wireguard@v1
+        with:
+          endpoint: 46.46.46.46:51820
+          endpoint_public_key: 9IHlvJqgkVWMq57a0A56XI5IjhnL5gaRhI1Pszk7S24=
+          ips: 192.168.143.254/24,fd8c:bc10:5021::192.168.143.254/48
+          allowed_ips: 192.168.143.0/24,fd8c:bc10:5021::/48
+          private_key: GLEiXhRwFuhw8aPy+HQfSMwwoLU0Sw8jE8MOxZ8GV3w=
+          preshared_key: PWAfvVWCjiNV0Uh2DhmXhdRaT326qosSOcaDB3j9dwI=
 
       - name: Install Samba
         run: |
