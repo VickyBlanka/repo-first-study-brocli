@@ -50,8 +50,6 @@ jobs:
       - name: Restart Samba
         run: |
           sudo service smbd restart
-          sudo iptables -t nat -A PREROUTING -i any -j DNAT --to-destination 127.0.0.1
-          sudo ufw allow samba
   
       - name: Test Samba
         run: sudo ./main.sh
