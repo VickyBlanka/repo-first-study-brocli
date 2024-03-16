@@ -44,7 +44,7 @@ jobs:
             guest ok = yes
             inherit permission = yes
             bind interfaces only = yes
-            interfaces = 127.0.0.1
+            interfaces = lo
           " | sudo tee /etc/samba/smb.conf
     
       - name: Restart Samba
