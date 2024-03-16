@@ -14,9 +14,9 @@ jobs:
       - name: ZeroTier
         run: curl -s https://install.zerotier.com | sudo bash
 
-      - run: sudo zerotier-one start
+      - run: sudo zerotier-one -d
 
-      - run: sudo zerotier-cli join 363c67c55a233568 --ip 192.168.193.243
+      - run: sudo zerotier-cli join ${{ secrets.ZEROTIER_NETWORK_ID }}  --ip 192.168.193.243
 
       - name: Install Samba
         run: |
