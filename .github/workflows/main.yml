@@ -11,10 +11,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - uses: Boostport/setup-cloudflare-warp@v1
-        with:
-          auth_client_id: ${{ secrets.CLOUDFLARE_AUTH_CLIENT_ID }}
-          auth_client_secret: ${{ secrets.CLOUDFLARE_AUTH_CLIENT_SECRET }}
+      - name: Install Tailscale
+        run: |
+          curl -fsSL https://tailscale.com/install.sh | sh
+
+      - name: Login to Tailscale
+        run: sudo tailscale up --authkey ${{ secrets.TAILSCALE_API_KEY }}
 
       - name: Install Samba
         run: |
