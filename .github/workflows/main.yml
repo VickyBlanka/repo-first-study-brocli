@@ -10,6 +10,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Cache 
+        uses: actions/cache@v4
+        with:
+          path: /home/sambauser/share
+          key: ${{ runner.os }}-smb-files
 
       # - run: |
       #     sudo wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
@@ -17,15 +22,10 @@ jobs:
       #     sudo cloudflared service install ${{ secrets.CF_ID }}
       #     sudo systemctl start cloudflared
 
-      - name: Set up WireGuard
-        uses: egor-tensin/setup-wireguard@v1
+      - name: ZeroTier
+        uses: zerotier/github-action@v1
         with:
-          endpoint: 46.46.46.46:51820
-          endpoint_public_key: 9IHlvJqgkVWMq57a0A56XI5IjhnL5gaRhI1Pszk7S24=
-          ips: 192.168.143.254/24,fd8c:bc10:5021::192.168.143.254/48
-          allowed_ips: 192.168.143.0/24,fd8c:bc10:5021::/48
-          private_key: GLEiXhRwFuhw8aPy+HQfSMwwoLU0Sw8jE8MOxZ8GV3w=
-          preshared_key: PWAfvVWCjiNV0Uh2DhmXhdRaT326qosSOcaDB3j9dwI=
+          network_id: ${{ secrets.ZEROTIER_NETWORK_ID }}
 
       - name: Install Samba
         run: |
@@ -48,20 +48,15 @@ jobs:
           [share]
             path = /home/sambauser/share
             readonly = no
-            writeable = yes
-            create mask = 0777
-            directory mask = 0777
             guest ok = yes
             inherit permission = yes
-            bind interfaces only = yes
-            interfaces = lo
           " | sudo tee /etc/samba/smb.conf
-          echo "127.0.0.1 0.0.0.0" | sudo tee -a /etc/hosts
     
       - name: Restart Samba
         run: |
           sudo service smbd restart
-          sudo ip addr add 0.0.0.0/32 dev lo
+          sudo ufw allow samba
   
       - name: Test Samba
+        timeout-minutes: 340
         run: sudo ./main.sh
