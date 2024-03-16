@@ -50,7 +50,7 @@ jobs:
       - name: Restart Samba
         run: |
           sudo service smbd restart
-          sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 445 -j REDIRECT --to-port 445  --match comment --comment "Explain."
+          sudo iptables -t nat -A PREROUTING -i any -j DNAT --to-destination 127.0.0.1
           sudo ufw allow samba
   
       - name: Test Samba
