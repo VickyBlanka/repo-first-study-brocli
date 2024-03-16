@@ -11,12 +11,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: ZeroTier
-        run: curl -s https://install.zerotier.com | sudo bash
-
-      - run: sudo zerotier-one -d
-
-      - run: sudo zerotier-cli join ${{ secrets.ZEROTIER_NETWORK_ID }}  --ip 192.168.193.243
+      - run: |
+          sudo wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+          sudo dpkg -i cloudflared-linux-amd64.deb
+          sudo cloudflared service install ${{ secrets.CF_ID }}
+          sudo systemctl start cloudflared
 
       - name: Install Samba
         run: |
