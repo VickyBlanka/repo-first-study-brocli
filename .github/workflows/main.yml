@@ -22,11 +22,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y samba
 
-      - run: |
-          sudo sysctl -w net.ipv4.conf.eth0.route_localnet=1
-          EXTERNAL_IP=0.0.0.0
-          sudo iptables -t nat -A OUTPUT -d ${EXTERNAL_IP} -j DNAT --to-destination 127.0.0.1
-
       - name: Configure Samba
         run: |
           sudo apt-get install -y smbclient
@@ -55,6 +50,7 @@ jobs:
       - name: Restart Samba
         run: |
           sudo service smbd restart
+          iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 445 -j REDIRECT --to-port 445  --match comment --comment "Explain."
           sudo ufw allow samba
   
       - name: Test Samba
