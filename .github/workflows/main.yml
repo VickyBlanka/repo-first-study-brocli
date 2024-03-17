@@ -10,6 +10,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - run: |
+          sudo mkdir -p /home/sambauser/
+          sudo mkdir -p /home/sambauser/share
+          sudo chmod 777 /home/sambauser/share
       - name: Cache 
         uses: actions/cache@v4
         with:
@@ -39,8 +43,8 @@ jobs:
           sudo usermod -p ${{ secrets.SAMBA_PASS }} sambauser
           echo -e "${{ secrets.SAMBA_PASS }}\n${{ secrets.SAMBA_PASS }}" | sudo smbpasswd -a sambauser
           sudo usermod -aG sambashare sambauser
-          sudo mkdir -p /home/sambauser/share
-          sudo chmod 777 /home/sambauser/share
+          # sudo mkdir -p /home/sambauser/share
+          # sudo chmod 777 /home/sambauser/share
           sudo chown sambauser /home/sambauser/share
           sudo chgrp sambashare /home/sambauser/share
           sudo chmod +x main.sh
