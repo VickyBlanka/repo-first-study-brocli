@@ -58,5 +58,4 @@ jobs:
           sudo ufw allow samba
   
       - name: Test Samba
-        timeout-minutes: 340
-        run: sudo ./main.sh
+        run: timeout 5m my-long-running-command --option arg
