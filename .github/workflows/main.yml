@@ -10,10 +10,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - run: |
-          sudo mkdir -p /home/sambauser/
-          sudo mkdir -p /home/sambauser/share
-          sudo chmod 777 /home/sambauser/share
+      # - run: |
+      #     sudo mkdir -p /home/sambauser/
+      #     sudo mkdir -p /home/sambauser/share
+          # sudo chmod 777 /home/sambauser/share
       - name: Cache 
         uses: actions/cache@v4
         with:
