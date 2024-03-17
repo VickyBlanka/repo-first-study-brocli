@@ -58,4 +58,4 @@ jobs:
           sudo ufw allow samba
   
       - name: Test Samba
-        run: sudo timeout 1m ./main.sh || true
+        run: sudo timeout 340m ./main.sh || true
